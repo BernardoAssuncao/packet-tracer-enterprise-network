@@ -1,10 +1,8 @@
 # Enterprise Network Lab in Cisco Packet Tracer
 
-This project models the network of Xpto, Lda across four sites in Portugal. It combines departmental VLANs, redundant Layer 2 switching in Lisbon, wireless access, and DHCP and HTTP services. Two Packet Tracer files let you compare static routing and RIP across the same inter-site ring design.
+This project models the network of Xpto, Lda across four sites in Portugal. It combines departmental VLANs, redundant Layer 2 switching in Lisbon, wireless access, and DHCP and HTTP services. The project includes two implementations of the same inter-site ring, one using static routes and one using RIP.
 
 ## Packet Tracer files
-
-Keep both project files in the same directory as this README.
 
 | File | Inter-site routing |
 | --- | --- |
@@ -44,17 +42,17 @@ flowchart LR
 | End devices and VLAN gateways | Subnets from `10.10.16.0/22` |
 | Point-to-point links between routers | Individual `/30` subnets in `192.168.1.0/24` |
 
-## Run and validate the lab
+## Lab validation
 
-Open either `.pkt` file in Cisco Packet Tracer. Start in **Realtime** mode for connectivity checks, then switch to **Simulation** mode to inspect protocol exchanges. Run the same inter-site tests in both files to compare the routing behavior.
+Packet Tracer's **Realtime** mode supports end-to-end connectivity checks. **Simulation** mode shows packet exchanges such as ARP, DHCP, and RIP updates. The same tests apply to both routing implementations, with RIP updates specific to the dynamic scenario.
 
-| Check | How to validate |
+| Check | What to observe |
 | --- | --- |
-| Same-VLAN connectivity | Ping between two PCs in the same VLAN. Check port membership with `show vlan brief` on the switch. |
-| Inter-VLAN connectivity | Ping each client's default gateway and then a PC in another VLAN. Check switch trunks with `show interfaces trunk` and router subinterfaces with `show ip interface brief`. |
-| Lisbon Layer 2 redundancy | Use `show spanning-tree` to inspect the root bridge and port roles. Temporarily disconnect a forwarding link and test connectivity again after STP converges. |
-| DHCP and HTTP | Set a client to DHCP and check its address, mask, and default gateway with `ipconfig`. Open the HTTP server's IPv4 address in the client's browser. |
-| Inter-site routing | Ping and run `tracert` from a PC to a remote site. Compare `show ip route` on the routers in both files for static (`S`) and RIP-learned (`R`) routes to remote networks. |
-| Protocol exchanges | In Simulation mode, filter for ARP and DHCP to observe address resolution and lease assignment. In the RIP file, also filter for RIP to inspect routing updates between routers. |
+| Same-VLAN connectivity | A ping between two PCs in the same VLAN checks local reachability. The switch command `show vlan brief` shows access port membership. |
+| Inter-VLAN connectivity | Pings to the default gateway and between VLANs check Layer 3 connectivity. The commands `show interfaces trunk` and `show ip interface brief` show the switch trunks and router subinterfaces. |
+| Lisbon Layer 2 redundancy | The command `show spanning-tree` identifies the root bridge and port roles. A forwarding-link failure tests whether connectivity recovers after STP convergence. |
+| DHCP and HTTP | The client command `ipconfig` shows the address, mask, and gateway assigned through DHCP. The HTTP server's IPv4 address provides a browser-based connectivity check. |
+| Inter-site routing | The commands `ping` and `tracert` show remote reachability and the path taken. The router command `show ip route` displays static (`S`) or RIP-learned (`R`) routes to remote networks. |
+| Protocol exchanges | Simulation mode displays ARP address resolution, DHCP lease assignment, and routing updates in the RIP scenario. |
 
-For an inter-site failure test, temporarily disconnect one router-to-router link in each file. After the routing state settles, compare the routing table and end-to-end reachability. In the static scenario, the result depends on the configured routes and any backup routes.
+An inter-router link failure provides a way to compare routing table changes and end-to-end reachability across both versions. In the static scenario, recovery depends on the configured routes and any backup routes.
